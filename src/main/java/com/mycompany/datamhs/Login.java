@@ -1,15 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.datamhs;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel; 
 
-/**
- *
- * @author HP VICTUS
- */
 public class Login extends javax.swing.JFrame {
+    // 1. Taruh variabel ini di sini
+    private static Connection mysqlconfig;
     
+    // 2. Taruh fungsi configDB() dari temanmu di sini
+    public static Connection configDB() throws SQLException 
+    {
+        try {
+            // Catatan: Pastikan nama database "Mahasiswa" ini sesuai dengan nama database di MySQL kamu
+            String url = "jdbc:mysql://localhost:3306/reservasi_kampus";
+            String user = "root"; 
+            String pass = ""; 
+            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+            mysqlconfig = DriverManager.getConnection(url, user, pass);
+        }
+        catch (Exception e) 
+        {
+            System.err.println("koneksi gagal " + e.getMessage());
+        }
+        return mysqlconfig;
+    }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
     /**
@@ -44,18 +60,14 @@ public class Login extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
         jSeparator2 = new javax.swing.JSeparator();
         LOGIN = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -115,9 +127,6 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Reservasi Fasilitas Kampus");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel4.setText("Nama");
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel5.setText("Email");
 
@@ -125,20 +134,6 @@ public class Login extends javax.swing.JFrame {
         jLabel6.setText("Password");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-
-        jTextField1.setText("jTextField1");
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-
-        jTextField2.setText("jTextField1");
-        jTextField2.addActionListener(this::jTextField2ActionPerformed);
-
-        jTextField3.setText("jTextField1");
-        jTextField3.addActionListener(this::jTextField3ActionPerformed);
-
-        jTextField5.setText("jTextField5");
-
-        jLabel8.setFont(new java.awt.Font("Microsoft New Tai Lue", 1, 12)); // NOI18N
-        jLabel8.setText("NIP/NIM");
 
         LOGIN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         LOGIN.setText("Login");
@@ -158,37 +153,31 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(133, 133, 133)
+                        .addComponent(jLabel7))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(93, 93, 93)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(69, 69, 69)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(64, 64, 64)
-                                        .addComponent(jLabel7))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel8)
-                                            .addComponent(jLabel4)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel6))
-                                        .addGap(71, 71, 71)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(201, 201, 201)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(246, 246, 246)
-                                .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addGap(47, 47, 47)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                            .addComponent(txtPassword)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap()
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(143, 143, 143)))
-                .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(145, 145, 145)
+                .addComponent(jLabel2)
+                .addContainerGap(152, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,50 +188,93 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addGap(21, 21, 21)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
-                .addGap(18, 18, 18)
+                    .addComponent(jLabel5)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addGap(53, 53, 53)
+                    .addComponent(jLabel6)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
                 .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(35, 35, 35)
                 .addComponent(jLabel7)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void LOGINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LOGINActionPerformed
-        // TODO add your handling code here:
+// 1. Ambil input dari text field di form login kamu
+    // PENTING: Pastikan nama variabel JTextField email & password kamu sudah sesuai (misal: txtEmail dan txtPassword)
+    String email = txtEmail.getText();
+    String password = String.valueOf(txtPassword.getPassword()); 
+
+    // Validasi jika inputan masih kosong
+    if (email.isEmpty() || password.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Email dan Password tidak boleh kosong!");
+        return;
+    }
+
+    try {
+        // 2. Buka koneksi ke database
+        java.sql.Connection conn = configDB();
+        
+        // 3. Query untuk mencocokkan email dan password di tabel pengguna
+        String sql = "SELECT * FROM pengguna WHERE email='" + email + "' AND kata_sandi='" + password + "'";
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet res = stm.executeQuery(sql);
+
+        // Jika email dan password cocok ditemukan
+        if (res.next()) {
+            String idPengguna = res.getString("id_pengguna");
+            String namaUser = res.getString("nama");
+
+            // 4. Pengecekan ROLE: Cek apakah ID Pengguna ini terdaftar di tabel mahasiswa
+            String sqlMhs = "SELECT * FROM mahasiswa WHERE id_pengguna='" + idPengguna + "'";
+            java.sql.Statement stmMhs = conn.createStatement();
+            java.sql.ResultSet resMhs = stmMhs.executeQuery(sqlMhs);
+            
+            if (resMhs.next()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Mahasiswa: " + namaUser);
+                
+                // Di sini nanti tempat membuka halaman utama Mahasiswa (ajukanReservasi)
+                // Contoh: DashboardMahasiswa mhsMenu = new DashboardMahasiswa();
+                // mhsMenu.setVisible(true);
+                
+                this.dispose(); // Tutup form login
+                return;
+            }
+
+            // 5. Pengecekan ROLE: Cek apakah ID Pengguna ini terdaftar di tabel admin
+            String sqlAdmin = "SELECT * FROM admin WHERE id_pengguna='" + idPengguna + "'";
+            java.sql.Statement stmAdmin = conn.createStatement();
+            java.sql.ResultSet resAdmin = stmAdmin.executeQuery(sqlAdmin);
+            
+            if (resAdmin.next()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Admin: " + namaUser);
+                
+                // Di sini nanti tempat membuka halaman utama Admin (kelolaReservasi)
+                // Contoh: DashboardAdmin adminMenu = new DashboardAdmin();
+                // adminMenu.setVisible(true);
+                
+                this.dispose(); // Tutup form login
+                return;
+            }
+
+        } else {
+            // Jika tidak ada email & password yang cocok
+            javax.swing.JOptionPane.showMessageDialog(this, "Email atau Password Salah!");
+        }
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Terjadi kesalahan sistem: " + e.getMessage());
+    }
     }//GEN-LAST:event_LOGINActionPerformed
 
     private void LOGINMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LOGINMouseClicked
@@ -284,11 +316,9 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -297,11 +327,9 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private java.awt.Label label1;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JPasswordField txtPassword;
     // End of variables declaration//GEN-END:variables
 }
