@@ -6,26 +6,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel; 
 
 public class Login extends javax.swing.JFrame {
-    // 1. Taruh variabel ini di sini
-    private static Connection mysqlconfig;
     
-    // 2. Taruh fungsi configDB() dari temanmu di sini
-    public static Connection configDB() throws SQLException 
-    {
-        try {
-            // Catatan: Pastikan nama database "Mahasiswa" ini sesuai dengan nama database di MySQL kamu
-            String url = "jdbc:mysql://localhost:3306/reservasi_kampus";
-            String user = "root"; 
-            String pass = ""; 
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            mysqlconfig = DriverManager.getConnection(url, user, pass);
-        }
-        catch (Exception e) 
-        {
-            System.err.println("koneksi gagal " + e.getMessage());
-        }
-        return mysqlconfig;
-    }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
     /**
@@ -222,7 +203,7 @@ public class Login extends javax.swing.JFrame {
 
     try {
         // 2. Buka koneksi ke database
-        java.sql.Connection conn = configDB();
+        Connection conn = koneksi.configDB();
         
         // 3. Query untuk mencocokkan email dan password di tabel pengguna
         String sql = "SELECT * FROM pengguna WHERE email='" + email + "' AND kata_sandi='" + password + "'";
@@ -242,9 +223,9 @@ public class Login extends javax.swing.JFrame {
             if (resMhs.next()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Mahasiswa: " + namaUser);
                 
-                // Di sini nanti tempat membuka halaman utama Mahasiswa (ajukanReservasi)
-                // Contoh: DashboardMahasiswa mhsMenu = new DashboardMahasiswa();
-                // mhsMenu.setVisible(true);
+                Dashboard_Mahasiswa mhsMenu = new Dashboard_Mahasiswa();
+                mhsMenu.setVisible(true);
+                this.dispose();
                 
                 this.dispose(); // Tutup form login
                 return;

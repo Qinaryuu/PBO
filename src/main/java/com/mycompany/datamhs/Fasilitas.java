@@ -153,13 +153,7 @@ public class Fasilitas extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
-        jTextField5.setText("jTextField5");
-
         jLabel8.setFont(new java.awt.Font("Microsoft New Tai Lue", 1, 12)); // NOI18N
-
-        jTextField6.setText("jTextField5");
-
-        jTextField7.setText("jTextField5");
 
         jButton1.setText("Cek Kapasitas");
         jButton1.addActionListener(this::jButton1ActionPerformed);
