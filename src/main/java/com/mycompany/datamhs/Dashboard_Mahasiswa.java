@@ -147,16 +147,14 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     int konfirmasi = javax.swing.JOptionPane.showConfirmDialog(this, 
-            "Apakah Anda yakin ingin keluar dari aplikasi?", 
-            "Konfirmasi Logout", 
-            javax.swing.JOptionPane.YES_NO_OPTION);
+            "Apakah Anda yakin ingin keluar?", "Logout", javax.swing.JOptionPane.YES_NO_OPTION);
     
     if (konfirmasi == javax.swing.JOptionPane.YES_OPTION) {
-        // 2. Buka kembali form Login asli
-        new Login().setVisible(true);
+        // 1. Buka form Notify (Terima Kasih) terlebih dahulu
+        new Notify().setVisible(true); 
         
-        // 3. Tutup halaman dashboard yang aktif saat ini
-        this.dispose();
+        // 2. Tutup dashboard aktif
+        this.dispose(); 
     }
     }//GEN-LAST:event_jButton4ActionPerformed
 
