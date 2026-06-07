@@ -16,7 +16,6 @@ public class pengguna {
 
     // Fungsi aksesMenu() sesuai yang ada di kotak UML Pengguna
     public void aksesMenu() {
-        // Akan dioverride oleh kelas anak (Mahasiswa / Admin)
     }
 
     // Getter dan Setter untuk mengakses atribut private dari luar

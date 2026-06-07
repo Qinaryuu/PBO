@@ -132,31 +132,30 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(133, 133, 133)
-                        .addComponent(jLabel7))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addGap(47, 47, 47)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                            .addComponent(txtPassword)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(145, 145, 145)
                 .addComponent(jLabel2)
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(133, 133, 133)
+                            .addComponent(jLabel7))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(93, 93, 93)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel6))
+                            .addGap(47, 47, 47)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                                .addComponent(txtPassword)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(125, 125, 125)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,9 +174,9 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addComponent(LOGIN, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addGap(56, 56, 56)
                 .addComponent(jLabel7)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -190,33 +189,32 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void LOGINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LOGINActionPerformed
-     // 1. Ambil input dari text field
+
     String email = txtEmail.getText();
     String password = String.valueOf(txtPassword.getPassword()); 
 
-    // Validasi jika inputan masih kosong
+
     if (email.isEmpty() || password.isEmpty()) {
         javax.swing.JOptionPane.showMessageDialog(this, "Email dan Password tidak boleh kosong!");
         return;
     }
 
     try {
-        // 2. Buka koneksi ke database
         Connection conn = koneksi.configDB();
         
-        // 3. Query mencocokkan email dan password di tabel pengguna
+
         String sql = "SELECT * FROM pengguna WHERE email='" + email + "' AND kata_sandi='" + password + "'";
         java.sql.Statement stm = conn.createStatement();
         java.sql.ResultSet res = stm.executeQuery(sql);
 
-        // Jika data pengguna ditemukan
+
         if (res.next()) {
             String idPengguna = res.getString("id_pengguna");
             String namaUser = res.getString("nama");
             String emailUser = res.getString("email");
             String passUser = res.getString("kata_sandi");
 
-            // 4. ROLE CEK: Apakah ID Pengguna ini ada di tabel mahasiswa?
+
             String sqlMhs = "SELECT * FROM mahasiswa WHERE id_pengguna='" + idPengguna + "'";
             java.sql.Statement stmMhs = conn.createStatement();
             java.sql.ResultSet resMhs = stmMhs.executeQuery(sqlMhs);
@@ -224,14 +222,13 @@ public class Login extends javax.swing.JFrame {
             if (resMhs.next()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Mahasiswa: " + namaUser);
                 
-                // LANGSUNG ALIKAN KE DASHBOARD MAHASISWA BARU
                 new Dashboard_Mahasiswa().setVisible(true);
                 
                 this.dispose();
                 return;
             }
 
-            // 5. ROLE CEK: Apakah ID Pengguna ini ada di tabel admin?
+
             String sqlAdmin = "SELECT * FROM admin WHERE id_pengguna='" + idPengguna + "'";
             java.sql.Statement stmAdmin = conn.createStatement();
             java.sql.ResultSet resAdmin = stmAdmin.executeQuery(sqlAdmin);
@@ -239,10 +236,9 @@ public class Login extends javax.swing.JFrame {
             if (resAdmin.next()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Admin: " + namaUser);
                 
-                // LANGSUNG ALIKAN KE DASHBOARD ADMIN BARU
                 new Dashboard_Admin().setVisible(true);
                 
-                this.dispose(); // Tutup form login
+                this.dispose();
                 return;
             }
 

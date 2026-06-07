@@ -21,26 +21,21 @@ public class Reservasi extends javax.swing.JFrame {
     public Reservasi(String id, String nama, String lokasi, String status) {
         initComponents();
 
-        // Simpan data lemparan ke variabel global
         this.idFasilitas = id;
         
-        // Isikan ke komponen teks agar tampil di layar mahasiswa
         txtIdFasilitas.setText(id);
         txtNamaRuangan.setText(nama);
         txtLokasi.setText(lokasi);
         
-        // Jalankan fungsi pengisian data pemohon otomatis
         ambilDataPengguna();
     }
     public void ambilDataPengguna() {
-        txtNim.setText("22010101"); // Sementara diisi statis untuk testing
+        txtNim.setText("22010101"); // data sementara
     }
 
-    // Method UML: cek ketersediaan ruangan di tanggal pemakaian (return true/false)
     public boolean cekKetersediaan() {
         boolean tersedia = true;
         try {
-            // Memanggil koneksi DB (pastikan nama kelas koneksi kamu sesuai, misal: 'koneksi')
             java.sql.Connection conn = koneksi.configDB(); 
             
             String sql = "SELECT * FROM reservasi WHERE idFasilitas='" + idFasilitas + "' "
@@ -49,7 +44,7 @@ public class Reservasi extends javax.swing.JFrame {
             java.sql.ResultSet res = stm.executeQuery(sql);
             
             if (res.next()) {
-                tersedia = false; // Jika data ditemukan, berarti sudah dibooking orang lain
+                tersedia = false;
             }
         } catch (Exception e) {
             System.out.println("Gagal cekKetersediaan(): " + e.getMessage());
@@ -335,17 +330,15 @@ public class Reservasi extends javax.swing.JFrame {
         return;
     }
 
-    // 1. Validasi bentrok jadwal menggunakan fungsi UML
     if (!cekKetersediaan()) {
         javax.swing.JOptionPane.showMessageDialog(this, "Maaf, Ruangan sudah dipesan mahasiswa lain pada tanggal tersebut!");
         return;
     }
     
-    // 2. Insert data dengan nama kolom yang sudah SESUAI phpMyAdmin kamu
     try {
     java.sql.Connection conn = koneksi.configDB();
     
-    // 1. Perintah INSERT untuk mencatat transaksi reservasi (Memakai USR001 sementara)
+    //Perintah INSERT untuk mencatat transaksi reservasi (Memakai USR001 sementara)
     String sqlInsert = "INSERT INTO reservasi (id_pengguna, idFasilitas, tanggal, tanggalReservasi, durasi) "
                + "VALUES ('USR001', " 
                + " '" + this.idFasilitas.trim() + "', "
@@ -356,15 +349,13 @@ public class Reservasi extends javax.swing.JFrame {
     java.sql.PreparedStatement pstInsert = conn.prepareStatement(sqlInsert);
     pstInsert.execute();
     
-    // 2. Perintah UPDATE untuk mengubah status fasilitas menjadi 'Dipinjam'
+    //UPDATE untuk mengubah status fasilitas menjadi 'Dipinjam'
     String sqlUpdate = "UPDATE fasilitas SET status = 'Dipinjam' WHERE idFasilitas = '" + this.idFasilitas.trim() + "'";
     java.sql.PreparedStatement pstUpdate = conn.prepareStatement(sqlUpdate);
     pstUpdate.execute();
     
-    // 3. Notifikasi Sukses
     javax.swing.JOptionPane.showMessageDialog(this, "Berhasil! Reservasi diajukan dan status fasilitas terupdate menjadi 'Dipinjam'.");
     
-    // 4. Kembali ke Dashboard
     new Dashboard_Mahasiswa().setVisible(true);
     this.dispose();
     

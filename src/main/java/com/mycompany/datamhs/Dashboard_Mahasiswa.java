@@ -11,7 +11,6 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
         initComponents();
         loadDataTabel();
     }
-// === FUNGSI UNTUK MEMUAT DATA DATABASE KE TABEL DASHBOARD ===
     public void loadDataTabel() {
     javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
     model.addColumn("Id Fasilitas");
@@ -115,11 +114,11 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jButton1)
-                                    .addGap(33, 33, 33)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGap(52, 52, 52)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel2)
                                         .addComponent(jButton2))
-                                    .addGap(18, 18, 18)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton3))))))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
@@ -150,10 +149,7 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
             "Apakah Anda yakin ingin keluar?", "Logout", javax.swing.JOptionPane.YES_NO_OPTION);
     
     if (konfirmasi == javax.swing.JOptionPane.YES_OPTION) {
-        // 1. Buka form Notify (Terima Kasih) terlebih dahulu
         new Notify().setVisible(true); 
-        
-        // 2. Tutup dashboard aktif
         this.dispose(); 
     }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -161,23 +157,21 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     int baris = tabelFasilitas.getSelectedRow();
     
-    // 1. Cek apakah mahasiswa sudah memilih baris di tabel
     if (baris != -1) {
         String id = tabelFasilitas.getValueAt(baris, 0).toString();
         String nama = tabelFasilitas.getValueAt(baris, 1).toString();
         String lokasi = tabelFasilitas.getValueAt(baris, 2).toString();
         String status = tabelFasilitas.getValueAt(baris, 4).toString();
         
-        // 2. LOGIKA PENCEGATAN: Jika statusnya 'Dipinjam', kunci aksesnya!
         if (status.equalsIgnoreCase("Dipinjam")) {
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "Maaf, ruangan " + nama + " saat ini sedang dipinjam!\nSilakan pilih ruangan lain yang masih tersedia.", 
                 "Ruangan Tidak Tersedia", 
                 javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; // Berhenti di sini, kode buka form Reservasi di bawah TIDAK akan dijalankan
+            return;
         }
         
-        // 3. Jika lolos validasi (Status = 'Tersedia'), form reservasi baru akan terbuka
+        //Jika lolos validasi (Status = 'Tersedia'), form reservasi baru akan terbuka
         new Reservasi(id, nama, lokasi, status).setVisible(true);
         this.dispose(); 
         

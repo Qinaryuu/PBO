@@ -2,7 +2,6 @@ package com.mycompany.datamhs;
 
 // Menggunakan 'extends' sebagai bukti pilar Inheritance ke kelas Pengguna
 public class Admin extends pengguna {
-    // Atribut unik milik admin sesuai UML
     private String nip;
 
     // Constructor untuk membuat objek admin saat login sukses

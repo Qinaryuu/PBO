@@ -9,7 +9,6 @@ public class Fasilitas extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Fasilitas.class.getName());
 
-   // Atribut Objek Sesuai UML
     private String idFasilitas;
     private String nama;
     private String lokasi;
@@ -19,7 +18,6 @@ public class Fasilitas extends javax.swing.JFrame {
         initComponents();
     }
 
-    // Constructor tambahan untuk instansiasi objek secara OOP
     public Fasilitas(String idFasilitas, String nama, String lokasi, String status) {
         initComponents();
         this.idFasilitas = idFasilitas;
@@ -27,7 +25,6 @@ public class Fasilitas extends javax.swing.JFrame {
         this.lokasi = lokasi;
         this.status = status;
         
-        // Langsung tampilkan data ke text field form
         jTextField6.setText(nama);
         jTextField7.setText(lokasi);
         jTextField5.setText(status);
@@ -42,14 +39,14 @@ public class Fasilitas extends javax.swing.JFrame {
             
             if (res.next()) {
                 this.idFasilitas = res.getString("id_fasilitas");
-                this.nama = res.getString("nama_fasilitas"); // sesuaikan nama kolom DB-mu jika beda
+                this.nama = res.getString("nama_fasilitas");
                 this.lokasi = res.getString("lokasi");
                 this.status = res.getString("status");
                 
                 // Set teks ke komponen GUI
-                jTextField6.setText(this.nama);   // Ruang
-                jTextField7.setText(this.lokasi); // Lokasi
-                jTextField5.setText(this.status); // Status
+                jTextField6.setText(this.nama);   
+                jTextField7.setText(this.lokasi); 
+                jTextField5.setText(this.status); 
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, "Data fasilitas tidak ditemukan!");
             }
