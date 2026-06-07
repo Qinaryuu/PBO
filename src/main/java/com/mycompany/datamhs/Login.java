@@ -190,8 +190,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void LOGINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LOGINActionPerformed
-// 1. Ambil input dari text field di form login kamu
-    // PENTING: Pastikan nama variabel JTextField email & password kamu sudah sesuai (misal: txtEmail dan txtPassword)
+     // 1. Ambil input dari text field
     String email = txtEmail.getText();
     String password = String.valueOf(txtPassword.getPassword()); 
 
@@ -205,17 +204,19 @@ public class Login extends javax.swing.JFrame {
         // 2. Buka koneksi ke database
         Connection conn = koneksi.configDB();
         
-        // 3. Query untuk mencocokkan email dan password di tabel pengguna
+        // 3. Query mencocokkan email dan password di tabel pengguna
         String sql = "SELECT * FROM pengguna WHERE email='" + email + "' AND kata_sandi='" + password + "'";
         java.sql.Statement stm = conn.createStatement();
         java.sql.ResultSet res = stm.executeQuery(sql);
 
-        // Jika email dan password cocok ditemukan
+        // Jika data pengguna ditemukan
         if (res.next()) {
             String idPengguna = res.getString("id_pengguna");
             String namaUser = res.getString("nama");
+            String emailUser = res.getString("email");
+            String passUser = res.getString("kata_sandi");
 
-            // 4. Pengecekan ROLE: Cek apakah ID Pengguna ini terdaftar di tabel mahasiswa
+            // 4. ROLE CEK: Apakah ID Pengguna ini ada di tabel mahasiswa?
             String sqlMhs = "SELECT * FROM mahasiswa WHERE id_pengguna='" + idPengguna + "'";
             java.sql.Statement stmMhs = conn.createStatement();
             java.sql.ResultSet resMhs = stmMhs.executeQuery(sqlMhs);
@@ -223,15 +224,14 @@ public class Login extends javax.swing.JFrame {
             if (resMhs.next()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Mahasiswa: " + namaUser);
                 
-                Dashboard_Mahasiswa mhsMenu = new Dashboard_Mahasiswa();
-                mhsMenu.setVisible(true);
-                this.dispose();
+                // LANGSUNG ALIKAN KE DASHBOARD MAHASISWA BARU
+                new Dashboard_Mahasiswa().setVisible(true);
                 
-                this.dispose(); // Tutup form login
+                this.dispose();
                 return;
             }
 
-            // 5. Pengecekan ROLE: Cek apakah ID Pengguna ini terdaftar di tabel admin
+            // 5. ROLE CEK: Apakah ID Pengguna ini ada di tabel admin?
             String sqlAdmin = "SELECT * FROM admin WHERE id_pengguna='" + idPengguna + "'";
             java.sql.Statement stmAdmin = conn.createStatement();
             java.sql.ResultSet resAdmin = stmAdmin.executeQuery(sqlAdmin);
@@ -239,21 +239,20 @@ public class Login extends javax.swing.JFrame {
             if (resAdmin.next()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Selamat Datang Admin: " + namaUser);
                 
-                // Di sini nanti tempat membuka halaman utama Admin (kelolaReservasi)
-                // Contoh: DashboardAdmin adminMenu = new DashboardAdmin();
-                // adminMenu.setVisible(true);
+                // LANGSUNG ALIKAN KE DASHBOARD ADMIN BARU
+                new Dashboard_Admin().setVisible(true);
                 
                 this.dispose(); // Tutup form login
                 return;
             }
 
         } else {
-            // Jika tidak ada email & password yang cocok
             javax.swing.JOptionPane.showMessageDialog(this, "Email atau Password Salah!");
         }
     } catch (Exception e) {
         javax.swing.JOptionPane.showMessageDialog(this, "Terjadi kesalahan sistem: " + e.getMessage());
     }
+
     }//GEN-LAST:event_LOGINActionPerformed
 
     private void LOGINMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LOGINMouseClicked

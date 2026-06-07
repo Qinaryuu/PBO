@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.datamhs;
 
-/**
- *
- * @author MyBook Hype AMD
- */
 public class Dashboard_Mahasiswa extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Dashboard_Mahasiswa.class.getName());
@@ -17,8 +9,37 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
      */
     public Dashboard_Mahasiswa() {
         initComponents();
+        loadDataTabel();
     }
-
+// === FUNGSI UNTUK MEMUAT DATA DATABASE KE TABEL DASHBOARD ===
+    public void loadDataTabel() {
+    javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+    model.addColumn("Id Fasilitas");
+    model.addColumn("Nama Ruangan");
+    model.addColumn("Lokasi");
+    model.addColumn("Kapasitas");
+    model.addColumn("Status");
+    
+    try {
+        java.sql.Connection conn = koneksi.configDB();
+        String sql = "SELECT * FROM fasilitas"; 
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet res = stm.executeQuery(sql);
+        
+        while(res.next()){
+            model.addRow(new Object[]{
+                res.getString("idFasilitas"), 
+                res.getString("nama"), 
+                res.getString("lokasi"),
+                res.getString("kapasitas"), 
+                res.getString("status") 
+            });
+        }
+        tabelFasilitas.setModel(model);
+    } catch (Exception e) {
+        System.out.println("Gagal memuat data tabel: " + e.getMessage());
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,6 +55,8 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelFasilitas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,70 +69,150 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton2.setText("Lihat Ruangan");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jButton3.setText("Riwayat Reservasi");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
         jButton4.setText("Logout");
         jButton4.addActionListener(this::jButton4ActionPerformed);
+
+        tabelFasilitas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Id Fasilitas", "Nama Ruangan", "Lokasi ", "Kapasitas", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tabelFasilitas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(176, 176, 176)
-                            .addComponent(jLabel2))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(29, 29, 29)
-                            .addComponent(jButton1)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton2)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton3))))
-                .addContainerGap(17, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(101, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addGap(93, 93, 93)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(133, 133, 133)
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton4)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jButton1)
+                                    .addGap(33, 33, 33)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jButton2))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton3))))))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
+                .addGap(14, 14, 14)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addGap(37, 37, 37)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
                     .addComponent(jButton2)
+                    .addComponent(jButton1)
                     .addComponent(jButton3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton4)
-                .addGap(15, 15, 15))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(35, 35, 35)
-                    .addComponent(jLabel3)
-                    .addContainerGap(153, Short.MAX_VALUE)))
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+    int konfirmasi = javax.swing.JOptionPane.showConfirmDialog(this, 
+            "Apakah Anda yakin ingin keluar dari aplikasi?", 
+            "Konfirmasi Logout", 
+            javax.swing.JOptionPane.YES_NO_OPTION);
+    
+    if (konfirmasi == javax.swing.JOptionPane.YES_OPTION) {
+        // 2. Buka kembali form Login asli
+        new Login().setVisible(true);
+        
+        // 3. Tutup halaman dashboard yang aktif saat ini
+        this.dispose();
+    }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-    Reservasi frm = new Reservasi();
-    frm.setVisible(true);
-    // TODO add your handling code here:
+    int baris = tabelFasilitas.getSelectedRow();
+    
+    // 1. Cek apakah mahasiswa sudah memilih baris di tabel
+    if (baris != -1) {
+        String id = tabelFasilitas.getValueAt(baris, 0).toString();
+        String nama = tabelFasilitas.getValueAt(baris, 1).toString();
+        String lokasi = tabelFasilitas.getValueAt(baris, 2).toString();
+        String status = tabelFasilitas.getValueAt(baris, 4).toString();
+        
+        // 2. LOGIKA PENCEGATAN: Jika statusnya 'Dipinjam', kunci aksesnya!
+        if (status.equalsIgnoreCase("Dipinjam")) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Maaf, ruangan " + nama + " saat ini sedang dipinjam!\nSilakan pilih ruangan lain yang masih tersedia.", 
+                "Ruangan Tidak Tersedia", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; // Berhenti di sini, kode buka form Reservasi di bawah TIDAK akan dijalankan
+        }
+        
+        // 3. Jika lolos validasi (Status = 'Tersedia'), form reservasi baru akan terbuka
+        new Reservasi(id, nama, lokasi, status).setVisible(true);
+        this.dispose(); 
+        
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Silakan pilih ruangan dulu dari tabel!");
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+    int barisTerpilih = tabelFasilitas.getSelectedRow(); 
+    
+    if (barisTerpilih == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Silakan pilih salah satu ruangan dari tabel terlebih dahulu!");
+        return;
+    }
+    
+    String id = tabelFasilitas.getValueAt(barisTerpilih, 0).toString(); 
+    String nama = tabelFasilitas.getValueAt(barisTerpilih, 1).toString();   
+    String lokasi = tabelFasilitas.getValueAt(barisTerpilih, 2).toString(); 
+    String status = tabelFasilitas.getValueAt(barisTerpilih, 4).toString(); 
+    
+    Fasilitas formFasilitas = new Fasilitas(id, nama, lokasi, status);
+
+    formFasilitas.setVisible(true);
+
+    this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    new RiwayatReservasi().setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -143,5 +246,7 @@ public class Dashboard_Mahasiswa extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tabelFasilitas;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,24 +1,63 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.datamhs;
 
-/**
- *
- * @author HP VICTUS
- */
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 public class Fasilitas extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Fasilitas.class.getName());
 
-    /**
-     * Creates new form DataMhss
-     */
+   // Atribut Objek Sesuai UML
+    private String idFasilitas;
+    private String nama;
+    private String lokasi;
+    private String status;
+    
     public Fasilitas() {
         initComponents();
     }
 
+    // Constructor tambahan untuk instansiasi objek secara OOP
+    public Fasilitas(String idFasilitas, String nama, String lokasi, String status) {
+        initComponents();
+        this.idFasilitas = idFasilitas;
+        this.nama = nama;
+        this.lokasi = lokasi;
+        this.status = status;
+        
+        // Langsung tampilkan data ke text field form
+        jTextField6.setText(nama);
+        jTextField7.setText(lokasi);
+        jTextField5.setText(status);
+    }
+    // === FUNGSI UTK MEMUAT DATA BERDASARKAN ID ===
+    public void muatDataFasilitas(String id) {
+        try {
+            java.sql.Connection conn = koneksi.configDB();
+            String sql = "SELECT * FROM fasilitas WHERE id_fasilitas = '" + id + "'";
+            java.sql.Statement stm = conn.createStatement();
+            java.sql.ResultSet res = stm.executeQuery(sql);
+            
+            if (res.next()) {
+                this.idFasilitas = res.getString("id_fasilitas");
+                this.nama = res.getString("nama_fasilitas"); // sesuaikan nama kolom DB-mu jika beda
+                this.lokasi = res.getString("lokasi");
+                this.status = res.getString("status");
+                
+                // Set teks ke komponen GUI
+                jTextField6.setText(this.nama);   // Ruang
+                jTextField7.setText(this.lokasi); // Lokasi
+                jTextField5.setText(this.status); // Status
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Data fasilitas tidak ditemukan!");
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Gagal memuat data: " + e.getMessage());
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -254,11 +293,18 @@ public class Fasilitas extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        new Dashboard_Mahasiswa().setVisible(true); 
+
+        this.dispose(); 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    String ruang = jTextField6.getText();
+        if (ruang.isEmpty() || ruang.equals("jTextField1")) {
+            JOptionPane.showMessageDialog(this, "Silakan muat data fasilitas terlebih dahulu!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Fasilitas " + ruang + " siap digunakan.");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -323,4 +369,5 @@ public class Fasilitas extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private java.awt.Label label1;
     // End of variables declaration//GEN-END:variables
+
 }

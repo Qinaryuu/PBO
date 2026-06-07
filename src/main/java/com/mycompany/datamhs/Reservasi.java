@@ -1,73 +1,62 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.datamhs;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import javax.swing.JOptionPane;
-import java.sql.PreparedStatement;
+
 /**
  *
  * @author HP VICTUS
  */
 public class Reservasi extends javax.swing.JFrame {
-    
+    private int idTransaksi;
+    private java.util.Date tanggal;
+    private int durasi;                      
+    private java.util.Date tanggalReservasi; 
+    private String idFasilitas; 
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Reservasi.class.getName());
 
-    /**
-     * Creates new form DataMhss
-     */
+ 
     public Reservasi() {
         initComponents();
-        tampilRuangan();
-        tampilDetailRuangan();
+    }
+    
+    public Reservasi(String id, String nama, String lokasi, String status) {
+        initComponents();
+
+        // Simpan data lemparan ke variabel global
+        this.idFasilitas = id;
+        
+        // Isikan ke komponen teks agar tampil di layar mahasiswa
+        txtIdFasilitas.setText(id);
+        txtNamaRuangan.setText(nama);
+        txtLokasi.setText(lokasi);
+        
+        // Jalankan fungsi pengisian data pemohon otomatis
+        ambilDataPengguna();
+    }
+    public void ambilDataPengguna() {
+        txtNim.setText("22010101"); // Sementara diisi statis untuk testing
     }
 
-    private void tampilRuangan() {
+    // Method UML: cek ketersediaan ruangan di tanggal pemakaian (return true/false)
+    public boolean cekKetersediaan() {
+        boolean tersedia = true;
         try {
-        Connection conn = koneksi.configDB();
-
-        String sql = "SELECT nama FROM fasilitas";
-        Statement stm = conn.createStatement();
-        ResultSet rs = stm.executeQuery(sql);
-
-        cbRuangan.removeAllItems();
-
-         while (rs.next()) {
-            String ruang = rs.getString("nama");
-            System.out.println(ruang);
-
-            cbRuangan.addItem(ruang);
-         }
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage());
-    }
-    }
-  
-    private void tampilDetailRuangan() {
-    try {
-        Connection conn = koneksi.configDB();
-
-        String sql = "SELECT lokasi, kapasitas FROM fasilitas WHERE nama=?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-
-        pst.setString(1, cbRuangan.getSelectedItem().toString());
-
-        ResultSet rs = pst.executeQuery();
-
-        if (rs.next()) {
-            txtLokasi.setText(rs.getString("lokasi"));
-            txtKapasitas.setText(rs.getString("kapasitas"));
+            // Memanggil koneksi DB (pastikan nama kelas koneksi kamu sesuai, misal: 'koneksi')
+            java.sql.Connection conn = koneksi.configDB(); 
+            
+            String sql = "SELECT * FROM reservasi WHERE idFasilitas='" + idFasilitas + "' "
+                       + "AND tanggalReservasi='" + txtTanggalReservasi.getText() + "'";
+            java.sql.Statement stm = conn.createStatement();
+            java.sql.ResultSet res = stm.executeQuery(sql);
+            
+            if (res.next()) {
+                tersedia = false; // Jika data ditemukan, berarti sudah dibooking orang lain
+            }
+        } catch (Exception e) {
+            System.out.println("Gagal cekKetersediaan(): " + e.getMessage());
         }
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage());
+        return tersedia;
     }
-}
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,17 +90,19 @@ public class Reservasi extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        tglPenggunaan = new javax.swing.JTextField();
+        txtNim = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         btnSimpan = new javax.swing.JButton();
-        cbRuangan = new javax.swing.JComboBox<>();
         txtDurasi = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         txtLokasi = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        txtKapasitas = new javax.swing.JTextField();
+        txtTanggalReservasi = new javax.swing.JTextField();
         btnBatal = new javax.swing.JButton();
+        txtIdFasilitas = new javax.swing.JTextField();
+        txtNamaRuangan = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -183,41 +174,48 @@ public class Reservasi extends javax.swing.JFrame {
         jLabel2.setText("Reservasi Fasilitas Kampus");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel4.setText("Pilih Ruangan");
+        jLabel4.setText("Nama Ruangan");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel5.setText("Durasi");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel6.setText("Tanggal Penggunaan");
+        jLabel6.setText("NIM / ID");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Microsoft New Tai Lue", 1, 12)); // NOI18N
 
         btnSimpan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnSimpan.setText("Simpan");
+        btnSimpan.setText("Ajukan ");
         btnSimpan.addActionListener(this::btnSimpanActionPerformed);
 
-        cbRuangan.addActionListener(this::cbRuanganActionPerformed);
-
-        txtDurasi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 Jam", "2 Jam", "3 Jam", "4 Jam" }));
+        txtDurasi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3 ", "4 " }));
         txtDurasi.addActionListener(this::txtDurasiActionPerformed);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel10.setText("Kapasitas");
+        jLabel10.setText("ID Fasilitas");
 
         txtLokasi.setEditable(false);
+        txtLokasi.addActionListener(this::txtLokasiActionPerformed);
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel11.setText("Lokasi");
 
-        txtKapasitas.setEditable(false);
-        txtKapasitas.addActionListener(this::txtKapasitasActionPerformed);
+        txtTanggalReservasi.addActionListener(this::txtTanggalReservasiActionPerformed);
 
         btnBatal.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnBatal.setText("Batal");
         btnBatal.addActionListener(this::btnBatalActionPerformed);
+
+        txtIdFasilitas.setEditable(false);
+        txtIdFasilitas.addActionListener(this::txtIdFasilitasActionPerformed);
+
+        txtNamaRuangan.setEditable(false);
+        txtNamaRuangan.addActionListener(this::txtNamaRuanganActionPerformed);
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel12.setText("Tanggal Pinjam");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -225,76 +223,83 @@ public class Reservasi extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(133, 133, 133)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(110, 110, 110)
-                                .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnBatal))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel8)
-                                        .addGap(35, 35, 35))
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel5))
-                                .addGap(48, 48, 48)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtDurasi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tglPenggunaan, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cbRuangan, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtKapasitas, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(txtLokasi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 136, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(154, 154, 154)
                 .addComponent(jLabel2)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 233, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel5)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8)
+                                    .addComponent(txtLokasi, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtDurasi, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtIdFasilitas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                    .addComponent(txtNamaRuangan, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                    .addComponent(txtNim, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                    .addComponent(txtTanggalReservasi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(btnBatal)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel10))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cbRuangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtLokasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtKapasitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
+                .addComponent(jLabel8)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtIdFasilitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtNamaRuangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tglPenggunaan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addGap(8, 8, 8)
+                    .addComponent(jLabel11)
+                    .addComponent(txtLokasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtNim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtTanggalReservasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtDurasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -322,24 +327,73 @@ public class Reservasi extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-        // TODO add your handling code here:
+    if (txtTanggalReservasi.getText().trim().isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Kolom Tanggal Pinjam wajib diisi (Format: YYYY-MM-DD)!");
+        return;
+    }
+
+    // 1. Validasi bentrok jadwal menggunakan fungsi UML
+    if (!cekKetersediaan()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Maaf, Ruangan sudah dipesan mahasiswa lain pada tanggal tersebut!");
+        return;
+    }
+    
+    // 2. Insert data dengan nama kolom yang sudah SESUAI phpMyAdmin kamu
+    try {
+    java.sql.Connection conn = koneksi.configDB();
+    
+    // 1. Perintah INSERT untuk mencatat transaksi reservasi (Memakai USR001 sementara)
+    String sqlInsert = "INSERT INTO reservasi (id_pengguna, idFasilitas, tanggal, tanggalReservasi, durasi) "
+               + "VALUES ('USR001', " 
+               + " '" + this.idFasilitas.trim() + "', "
+               + " NOW(), "  
+               + " '" + txtTanggalReservasi.getText().trim() + "', " 
+               + " '" + Integer.parseInt(txtDurasi.getSelectedItem().toString().trim()) + "')";
+               
+    java.sql.PreparedStatement pstInsert = conn.prepareStatement(sqlInsert);
+    pstInsert.execute();
+    
+    // 2. Perintah UPDATE untuk mengubah status fasilitas menjadi 'Dipinjam'
+    String sqlUpdate = "UPDATE fasilitas SET status = 'Dipinjam' WHERE idFasilitas = '" + this.idFasilitas.trim() + "'";
+    java.sql.PreparedStatement pstUpdate = conn.prepareStatement(sqlUpdate);
+    pstUpdate.execute();
+    
+    // 3. Notifikasi Sukses
+    javax.swing.JOptionPane.showMessageDialog(this, "Berhasil! Reservasi diajukan dan status fasilitas terupdate menjadi 'Dipinjam'.");
+    
+    // 4. Kembali ke Dashboard
+    new Dashboard_Mahasiswa().setVisible(true);
+    this.dispose();
+    
+} catch (Exception e) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Gagal memproses reservasi: " + e.getMessage());
+}
     }//GEN-LAST:event_btnSimpanActionPerformed
 
-    private void cbRuanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRuanganActionPerformed
-    tampilDetailRuangan();
-    }//GEN-LAST:event_cbRuanganActionPerformed
-
-    private void txtKapasitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKapasitasActionPerformed
+    private void txtTanggalReservasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTanggalReservasiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtKapasitasActionPerformed
+    }//GEN-LAST:event_txtTanggalReservasiActionPerformed
 
     private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
-        // TODO add your handling code here:
+    new Dashboard_Mahasiswa().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnBatalActionPerformed
 
     private void txtDurasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDurasiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDurasiActionPerformed
+
+    private void txtLokasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLokasiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLokasiActionPerformed
+
+    private void txtIdFasilitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdFasilitasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdFasilitasActionPerformed
+
+    private void txtNamaRuanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaRuanganActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNamaRuanganActionPerformed
 
     /**
      * @param args the command line arguments
@@ -369,7 +423,6 @@ public class Reservasi extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBatal;
     private javax.swing.JButton btnSimpan;
-    private javax.swing.JComboBox<String> cbRuangan;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JColorChooser jColorChooser2;
     private javax.swing.JComboBox<String> jComboBox1;
@@ -378,6 +431,7 @@ public class Reservasi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -398,9 +452,12 @@ public class Reservasi extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private java.awt.Label label1;
-    private javax.swing.JTextField tglPenggunaan;
     private javax.swing.JComboBox<String> txtDurasi;
-    private javax.swing.JTextField txtKapasitas;
+    private javax.swing.JTextField txtIdFasilitas;
     private javax.swing.JTextField txtLokasi;
+    private javax.swing.JTextField txtNamaRuangan;
+    private javax.swing.JTextField txtNim;
+    private javax.swing.JTextField txtTanggalReservasi;
     // End of variables declaration//GEN-END:variables
 }
+
